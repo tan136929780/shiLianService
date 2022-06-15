@@ -10,13 +10,13 @@ COPY . /go/src/vfile
 COPY ./go.mod ./
 COPY ./go.sum ./
 RUN go mod download
-RUN GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o main .
+RUN GOOS=linux GOARCH=amd64 go build -ldflags "-s -w" -o main
 
 FROM alpine
-
-COPY    --from=builder /go/src/vfile/main  /
-COPY    --from=builder /go/src/vfile/config/config.yaml  /config/config.yaml
-WORKDIR /
-RUN chmod 777 /main
+RUN mkdir -p /app
+COPY    --from=builder /go/src/vfile/main  /app
+COPY    --from=builder /go/src/vfile/config/config.yaml  /app/config/config.yaml
+WORKDIR /app
+RUN chmod 777 /app/main
 EXPOSE 8200
-CMD ["/main"]
+CMD ["/app/main"]
