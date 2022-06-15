@@ -3,3 +3,4 @@
 .git/
 /vfile/vendor/
 /vfile_client/vendor/
+/vfile/log/
