@@ -1,0 +1,5 @@
+.idea/
+.DS_Store/
+.git/
+/vfile/vendor/
+/vfile_client/vendor/
