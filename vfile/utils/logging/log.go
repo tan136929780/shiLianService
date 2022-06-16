@@ -14,6 +14,9 @@ import (
 var Logger = log.New()
 var SlowLogger = log.New()
 var AccessLogger = log.New()
+var MetaDataLogger = log.New()
+var UploadLogger = log.New()
+var DownloadLogger = log.New()
 
 var devNull *os.File
 
@@ -31,6 +34,9 @@ func InitAllLogger() {
 	initLogger()
 	initAccessLogger()
 	initSlowLogger()
+	initMetaDataLogger()
+	initUploadLogger()
+	initDownloadLogger()
 }
 
 func initLogger() {
@@ -161,4 +167,133 @@ func initAccessLogger() {
 
 	// 新增 Hook
 	AccessLogger.AddHook(lfHook)
+}
+
+func initMetaDataLogger() {
+	if devNull != nil {
+		MetaDataLogger.SetOutput(bufio.NewWriter(devNull))
+	}
+	//设置日志级别
+	MetaDataLogger.SetLevel(log.DebugLevel)
+
+	//设置日志格式
+	MetaDataLogger.SetFormatter(&log.JSONFormatter{
+		TimestampFormat: "2006-01-02 15:04:05",
+	})
+
+	// 设置 rotatelogs
+	logWriter, _ := rotatelogs.New(
+		getMetaDataLogFileFullPath()+".%Y%m%d.log",
+
+		// 生成软链，指向最新日志文件
+		rotatelogs.WithLinkName(getMetaDataLogFileFullPath()),
+
+		// 设置最大保存时间
+		rotatelogs.WithMaxAge(3*24*time.Hour),
+
+		// 设置日志切割时间间隔(1天)
+		rotatelogs.WithRotationTime(24*time.Hour),
+	)
+
+	writeMap := lfshook.WriterMap{
+		log.InfoLevel:  logWriter,
+		log.FatalLevel: logWriter,
+		log.DebugLevel: logWriter,
+		log.WarnLevel:  logWriter,
+		log.ErrorLevel: logWriter,
+		log.PanicLevel: logWriter,
+	}
+
+	lfHook := lfshook.NewHook(writeMap, &log.JSONFormatter{
+		TimestampFormat: "2006-01-02 15:04:05",
+	})
+
+	// 新增 Hook
+	MetaDataLogger.AddHook(lfHook)
+}
+
+func initUploadLogger() {
+	if devNull != nil {
+		UploadLogger.SetOutput(bufio.NewWriter(devNull))
+	}
+	//设置日志级别
+	UploadLogger.SetLevel(log.DebugLevel)
+
+	//设置日志格式
+	UploadLogger.SetFormatter(&log.JSONFormatter{
+		TimestampFormat: "2006-01-02 15:04:05",
+	})
+
+	// 设置 rotatelogs
+	logWriter, _ := rotatelogs.New(
+		getUploadLogFileFullPath()+".%Y%m%d.log",
+
+		// 生成软链，指向最新日志文件
+		rotatelogs.WithLinkName(getUploadLogFileFullPath()),
+
+		// 设置最大保存时间
+		rotatelogs.WithMaxAge(3*24*time.Hour),
+
+		// 设置日志切割时间间隔(1天)
+		rotatelogs.WithRotationTime(24*time.Hour),
+	)
+
+	writeMap := lfshook.WriterMap{
+		log.InfoLevel:  logWriter,
+		log.FatalLevel: logWriter,
+		log.DebugLevel: logWriter,
+		log.WarnLevel:  logWriter,
+		log.ErrorLevel: logWriter,
+		log.PanicLevel: logWriter,
+	}
+
+	lfHook := lfshook.NewHook(writeMap, &log.JSONFormatter{
+		TimestampFormat: "2006-01-02 15:04:05",
+	})
+
+	// 新增 Hook
+	UploadLogger.AddHook(lfHook)
+}
+
+func initDownloadLogger() {
+	if devNull != nil {
+		DownloadLogger.SetOutput(bufio.NewWriter(devNull))
+	}
+	//设置日志级别
+	DownloadLogger.SetLevel(log.DebugLevel)
+
+	//设置日志格式
+	DownloadLogger.SetFormatter(&log.JSONFormatter{
+		TimestampFormat: "2006-01-02 15:04:05",
+	})
+
+	// 设置 rotatelogs
+	logWriter, _ := rotatelogs.New(
+		getDownloadLogFileFullPath()+".%Y%m%d.log",
+
+		// 生成软链，指向最新日志文件
+		rotatelogs.WithLinkName(getDownloadLogFileFullPath()),
+
+		// 设置最大保存时间
+		rotatelogs.WithMaxAge(3*24*time.Hour),
+
+		// 设置日志切割时间间隔(1天)
+		rotatelogs.WithRotationTime(24*time.Hour),
+	)
+
+	writeMap := lfshook.WriterMap{
+		log.InfoLevel:  logWriter,
+		log.FatalLevel: logWriter,
+		log.DebugLevel: logWriter,
+		log.WarnLevel:  logWriter,
+		log.ErrorLevel: logWriter,
+		log.PanicLevel: logWriter,
+	}
+
+	lfHook := lfshook.NewHook(writeMap, &log.JSONFormatter{
+		TimestampFormat: "2006-01-02 15:04:05",
+	})
+
+	// 新增 Hook
+	DownloadLogger.AddHook(lfHook)
 }

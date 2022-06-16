@@ -5,11 +5,13 @@ import (
 )
 
 var (
-	GraylogSavePath   = "./log/"
-	LogSavePath       = "./log/"
-	LogSaveName       = "go.log"
-	AccessLogSaveName = "go.access"
-	SlowLogSaveName   = "go.slow"
+	LogSavePath         = "./log/"
+	CommonLogSaveName   = "common.log"
+	AccessLogSaveName   = "access.log"
+	SlowLogSaveName     = "slow.log"
+	MetaDataLogSaveName = "metaData.log"
+	UploadLogSaveName   = "upload.log"
+	DownloadLogSaveName = "download.log"
 )
 
 func getLogFilePath() string {
@@ -17,7 +19,7 @@ func getLogFilePath() string {
 }
 
 func getLogFileFullPath() string {
-	return GraylogSavePath + LogSaveName
+	return LogSavePath + CommonLogSaveName
 }
 
 func getAccessLogFileFullPath() string {
@@ -26,4 +28,16 @@ func getAccessLogFileFullPath() string {
 
 func getSlowLogFileFullPath() string {
 	return LogSavePath + SlowLogSaveName
+}
+
+func getMetaDataLogFileFullPath() string {
+	return LogSavePath + MetaDataLogSaveName
+}
+
+func getUploadLogFileFullPath() string {
+	return LogSavePath + UploadLogSaveName
+}
+
+func getDownloadLogFileFullPath() string {
+	return LogSavePath + DownloadLogSaveName
 }

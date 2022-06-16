@@ -17,21 +17,29 @@ func GetGrpcClient(host string, port int) *grpc.ClientConn {
 	return conn
 }
 
-func AddFileInstence(host string, port int) (*newvcms.CreateResult, error) {
+func AddFileInstence(host string, port int, request *newvcms.InstanceCreateRequest) (*newvcms.CreateResult, error) {
 	conn := GetGrpcClient(host, port)
 	defer conn.Close()
 	grpcClient := newvcms.NewInstanceServiceClient(conn)
-	rsp, err := grpcClient.CreateInstance(context.TODO(), &newvcms.InstanceCreateRequest{
-		Identifier: "FileModle",
-		Data:       nil,
-	})
+	rsp, err := grpcClient.CreateInstance(context.TODO(), request)
 	if err != nil {
 		return nil, err
 	}
 	return rsp, nil
 }
 
-func GetFileInstence(host string, port int) (*newvcms.InstanceFindByIdResponse, error) {
+func DelFileInstence(host string, port int, request *newvcms.InstanceDeleteRequest) (*newvcms.DeleteResult, error) {
+	conn := GetGrpcClient(host, port)
+	defer conn.Close()
+	grpcClient := newvcms.NewInstanceServiceClient(conn)
+	rsp, err := grpcClient.DeleteInstance(context.TODO(), request)
+	if err != nil {
+		return nil, err
+	}
+	return rsp, nil
+}
+
+func FindInstenceById(host string, port int) (*newvcms.InstanceFindByIdResponse, error) {
 	conn := GetGrpcClient(host, port)
 	defer conn.Close()
 	grpcClient := newvcms.NewInstanceServiceClient(conn)
@@ -39,6 +47,17 @@ func GetFileInstence(host string, port int) (*newvcms.InstanceFindByIdResponse, 
 		Uid:         "",
 		Identifiers: nil,
 	})
+	if err != nil {
+		return nil, err
+	}
+	return rsp, nil
+}
+
+func FindInstance(host string, port int, request *newvcms.InstanceFindRequest) (*newvcms.InstanceFindResponse, error) {
+	conn := GetGrpcClient(host, port)
+	defer conn.Close()
+	grpcClient := newvcms.NewInstanceServiceClient(conn)
+	rsp, err := grpcClient.FindInstance(context.TODO(), request)
 	if err != nil {
 		return nil, err
 	}

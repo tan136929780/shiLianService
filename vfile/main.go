@@ -21,7 +21,7 @@ func init() {
 	if err := config.Init(""); err != nil {
 		panic(err)
 	}
-	//日志初始化œ
+	//日志初始化
 	logging.InitAllLogger()
 }
 

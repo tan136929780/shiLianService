@@ -3,17 +3,21 @@ module file-service/vfile_client
 go 1.17
 
 require (
-	github.com/asim/go-micro/v3 v3.7.1
 	github.com/fsnotify/fsnotify v1.4.9
+	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
+	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5
+	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/viper v1.7.1
 	google.golang.org/grpc v1.47.0
 	google.golang.org/protobuf v1.28.0
 )
 
 require (
+	github.com/asim/go-micro/v3 v3.7.1 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/uuid v1.2.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
+	github.com/lestrrat-go/strftime v1.0.6 // indirect
 	github.com/magiconair/properties v1.8.4 // indirect
 	github.com/miekg/dns v1.1.43 // indirect
 	github.com/mitchellh/mapstructure v1.3.3 // indirect

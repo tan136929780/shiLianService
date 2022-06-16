@@ -61,6 +61,8 @@ struct DownloadResponse {
 import "C"
 import (
 	"context"
+	"encoding/json"
+	"file-service/vfile_client/proto/newvcms"
 	"file-service/vfile_client/proto/vfile"
 	"file-service/vfile_client/utils/config"
 	"file-service/vfile_client/utils/fileUtil"
@@ -165,12 +167,125 @@ func Download(in C.struct_DownloadInfoRequest) C.struct_DownloadResponse {
 
 func main() {
 	//upload()
-	//download()
-	instanceCreate()
+	download()
+	//instanceCreate()
+	//deleteInstance()
+	//createFileMetaData()
+	//FindInstance()
+}
+
+func FindInstance() {
+	//0x78ec
+	//identifier := "bf91a92aa29f34911540557b41ce79ac.png"
+	request := &newvcms.InstanceFindRequest{
+		Identifier: "FileMetaData",
+		Sorters:    nil,
+		Page:       1,
+		PageSize:   10,
+		Condition: map[string]string{
+			"instance.identifier": "bf91a92aa29f34911540557b41ce79ac.png",
+			"FileMetaData.status": "1",
+		},
+	}
+	response, err := grpcClient.FindInstance("10.1.68.60", 9090, request)
+	if err != nil {
+		fmt.Printf("Printf err Content: %#v\n", err.Error())
+	}
+	data := &fileUtil.FileInstanceList{}
+	err = json.Unmarshal([]byte(response.Data), data)
+	if err != nil {
+		return
+	}
+	fmt.Printf("Printf s Content: %v\n", data.Instances[0].FileMetaDataUri)
+}
+
+func createFileMetaData() {
+	isa, _ := json.Marshal([]string{"FileMetaData"})
+	request := &newvcms.InstanceCreateRequest{
+		Identifier: "FileMetaData",
+		Data: map[string]string{
+			"instance.identifier":   "bf91a92aa29f34911540557b41ce79ac.png",
+			"instance.isa":          string(isa),
+			"FileMetaData.fileName": "test.png",
+			"FileMetaData.uri":      "bf91a92aa29f34911540557b41ce79ac.png",
+			"FileMetaData.type":     ".png",
+			"FileMetaData.hash":     "bf91a92aa29f34911540557b41ce79ac",
+			"FileMetaData.fileSize": "78899",
+		},
+	}
+	response, err := grpcClient.AddFileInstence("10.1.68.60", 9090, request)
+	if err != nil {
+		fmt.Printf("Printf err Content: %#v\n", err.Error())
+	}
+	fmt.Printf("Printf response Content: %#v\n", response)
 }
 
 func instanceCreate() {
-	response, err := grpcClient.AddFileInstence("10.1.68.60", 9090)
+	isaProperty, _ := json.Marshal([]string{"property"})
+	propreties, _ := json.Marshal([]map[string]string{
+		{
+			"instance.identifier": "文件名",
+			"instance.isa":        string(isaProperty),
+			"property.identifier": "fileName",
+			"property.type":       "string",
+			"property.status":     "1",
+		},
+		{
+			"instance.identifier": "文件唯一标识",
+			"instance.isa":        string(isaProperty),
+			"property.identifier": "uri",
+			"property.type":       "string",
+			"property.status":     "1",
+		},
+		{
+			"instance.identifier": "文件类型",
+			"instance.isa":        string(isaProperty),
+			"property.identifier": "type",
+			"property.type":       "string",
+			"property.status":     "1",
+		},
+		{
+			"instance.identifier": "hash",
+			"instance.isa":        string(isaProperty),
+			"property.identifier": "hash",
+			"property.type":       "string",
+			"property.status":     "1",
+		},
+		{
+			"instance.identifier": "文件大小",
+			"instance.isa":        string(isaProperty),
+			"property.identifier": "fileSize",
+			"property.type":       "int",
+			"property.status":     "1",
+		},
+	})
+	isa, _ := json.Marshal([]string{"type"})
+	FileMetaData := map[string]string{
+		"instance.identifier": "文件上传模型",
+		"instance.isa":        string(isa),
+		"type.identifier":     "FileMetaData",
+		"type.property":       string(propreties),
+		"type.status":         "1",
+	}
+	request := &newvcms.InstanceCreateRequest{
+		Identifier: "type",
+		Data:       FileMetaData,
+	}
+	response, err := grpcClient.AddFileInstence("10.1.68.60", 9090, request)
+	if err != nil {
+		fmt.Printf("Printf err Content: %#v\n", err.Error())
+	}
+	fmt.Printf("Printf response Content: %#v\n", response)
+}
+
+func deleteInstance() {
+	//uids := []string{"0x78c9", "0x78ce", "0x78cd", "0x78cc", "0x78cb", "0x78ca"}
+	uids := []string{"0x78d1", "0x78d2", "0x78d3", "0x78d4", "0x78d5", "0x78d6"}
+	request := &newvcms.InstanceDeleteRequest{
+		Identifier: "type",
+		Ids:        uids,
+	}
+	response, err := grpcClient.DelFileInstence("10.1.68.60", 9090, request)
 	if err != nil {
 		fmt.Printf("Printf err Content: %#v\n", err.Error())
 	}
@@ -224,7 +339,6 @@ func download() {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	fmt.Printf("Printf rsp Content: %#v\n", rsp)
 	fileName, err := fileUtil.FileWrite(rsp.File.Content, rsp.Metadata.Uri)
 	if err != nil {
 		fmt.Println(err.Error())
