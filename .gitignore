@@ -1,6 +1,6 @@
 .idea/
 .DS_Store/
 .git/
-/vfile/vendor/
-/vfile_client/vendor/
-/vfile/log/
+/file-service/vendor/
+/file-client/vendor/
+/file-service/log/
