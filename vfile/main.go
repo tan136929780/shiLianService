@@ -36,7 +36,7 @@ func main() {
 		logging.Logger.Fatal(fmt.Sprintf("failed to listen: %v", err.Error()))
 		return
 	}
-	server := grpc.NewServer(grpc.UnaryInterceptor(interceptor.AccessInterceptor))
+	server := grpc.NewServer(grpc.UnaryInterceptor(interceptor.AccessInterceptor), grpc.ChainStreamInterceptor())
 	vfile.RegisterFileServiceServer(server, new(handler.FileHandler))
 
 	defer func() {
