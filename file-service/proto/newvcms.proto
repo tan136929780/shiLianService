@@ -1,0 +1,132 @@
+syntax = "proto3";
+
+package vnos.newvcms;
+
+option go_package = "./proto/newvcms";
+
+service InstanceService {
+  rpc CreateInstance(InstanceCreateRequest) returns (CreateResult){};
+  rpc DeleteInstance(InstanceDeleteRequest) returns (DeleteResult){};
+  rpc UpdateInstance(InstanceUpdateRequest) returns (UpdateResult){};
+  rpc FindInstance(InstanceFindRequest) returns (InstanceFindResponse){};
+  rpc FindInstanceById(InstanceFindByIdRequest) returns (InstanceFindByIdResponse){};
+  rpc FindMetaDataByIdentifier(MetaDataFindRequest) returns (MetaDataFindResponse){};
+}
+
+
+
+message MetaDataFindRequest{
+  //模型标识
+  string identifier = 1;
+}
+
+message MetaDataFindResponse{
+  int32 code = 1;
+
+  string message = 2;
+
+  string data = 3;
+}
+
+message InstanceUpdateRequest {
+  // 模型标识
+  string identifier = 1;
+  // 实例数据
+  map<string,string> values = 2;
+  // uid
+  string uid = 3;
+
+}
+message InstanceDeleteRequest{
+  // 模型标识
+  string identifier = 1;
+  //uid
+  repeated string ids = 2;
+}
+
+message InstanceCreateRequest{
+  // 模型标识
+  string identifier = 1;
+  //数据
+  map<string,string> data= 2;
+}
+
+message DeleteResult{
+
+  int32 code = 1 ;
+
+  string message = 2;
+  // 删除成功的个数
+  int32 num = 3;
+}
+
+message CreateResult{
+  // 状态码
+  int32 code = 1;
+  // 返回消息
+  string message = 2;
+  // 唯一标识
+  string uid = 3;
+}
+
+message UpdateResult{
+  //状态码
+  int32 code = 1;
+  //返回消息
+  string message = 2;
+}
+
+message InstanceFindRequest {
+  // 标识
+  string identifier = 1;
+  // 排序
+  repeated Sorter sorters = 2;
+  // 当前页面
+  int32 page = 3;
+  // 页面大小
+  int32 page_size = 4;
+  // 条件查询
+  map<string,string> condition = 5;
+
+}
+
+message InstanceFindByIdRequest {
+  //唯一标识
+  string uid = 1;
+  //repeated
+  repeated string identifiers = 2;
+
+}
+
+message Sorter {
+  enum OrderEnum{
+    ORDERASC = 0;
+    ORDERDESC = 1;
+  }
+  string propertyIdentifier = 1;
+  OrderEnum order = 2;
+}
+
+message InstanceFindResponse{
+  // 状态码
+  int32 code = 1;
+  // 返回消息
+  string message = 2;
+  // 当前页面
+  int32 page = 3;
+  // 页面大小
+  int32 pageSize = 4;
+  // 总数
+  int32 total = 5;
+  // 数据
+  string data = 6;
+}
+
+message InstanceFindByIdResponse{
+  // 状态码
+  int32 code = 1;
+  // 返回消息
+  string message = 2;
+  // 数据
+  string data = 6;
+}
